@@ -44,7 +44,7 @@ If you cover the LDR to dim the light and shine a brighter light source on it, i
 
 As it does this, the filter's noise parameters should also change. This should be audible as more fine grained noise when the LDR detects a higher intensity of light and more sparse, harsh grained noise when it detects low light.
 
-Due the light in each space this programme may be run being an uncontrolled variable, the mixing of the audio files and parameters of the filter can vary in their balance. In order to solve any issues with hearing the effects clearly, the global variable called **lightThreshold**  can be adjusted from between **0.0** and **1.0** to alter the balance of the mix and find a sweetspot, where the outcome is clearly audible.
+Due to the light in each space this programme may be run being an uncontrolled variable, the mixing of the audio files and parameters of the filter can vary in their balance. In order to solve any issues with hearing the effects clearly, the global variable called **lightThreshold**  can be adjusted from between **0.0** and **1.0** to alter the balance of the mix and find a sweetspot, where the outcome is clearly audible.
 
 The project folder contains a main render.cpp file which handles the main running of the code, via a render loop iterating at the audio block size and nested loop at the sample rate derived from the Bela's context.
 
@@ -54,13 +54,13 @@ The Clamping class is from the initial lab task, and limits its input to a new s
 
 The following four classes are all interconnected in creating the resulting filter, and are utilised by SpectralMask to build it.
 
-NoiseGenerator is run to create a sparse noise signal, used as the means of triggering the band gates and creating the texture of the filter.
+NoiseGenerator is run to create a sparse noise signal, used as the means of triggering the band gates and creating the texture of the filter. It creates a specified number of partials and, using its updatPartials method, rapidly randomises their frequencies.
 
 BandGate is used to create a series of binary frequency band gates in a specified number of divisions over the given range. The instances of this class (in this case, variables created from a struct) are created inside the SpectralMask class.
 
-BandpassFilter is used to create the filters that allow frequencies to either pass audibly or be muted. Its frequency bands are created through the same process as the BandGates and instances of both have a one to one correspondence in size and frequency range.
+BandpassFilter is used to create the filters that allow frequencies to either pass audibly or be muted. Its frequency bands are created through the same process as the BandGates and instances of both have a one to one correspondence in size and frequency range. The BPF objects use a biquad 0db constant peak formula.
 
-SpectralMask is used to create instances of and assemble the other classes to make the complete filter functionality. It also includes a process method, which applies the BandpassFilters to the dry signal to produce the filtered output.
+SpectralMask is used to create instances of and assemble the other classes to make the complete filter functionality. It includes a process method, which applies the BandpassFilters to the dry signal to produce the filtered output.
 
 In the render.cpp file, instances of the NoiseGenerator and SpectralMask classes are constructed using a pointer in a global variable, then initialized and passed values in the Bela's setup() function.
 
